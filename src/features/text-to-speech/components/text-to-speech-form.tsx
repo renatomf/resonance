@@ -1,12 +1,14 @@
 "use client";
 
-import { useAppForm } from "@/hooks/use-app-form";
-import { useTRPC } from "@/trpc/client";
+import { z } from "zod";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 import { formOptions } from "@tanstack/react-form";
 import { useMutation } from "@tanstack/react-query";
-import { useRouter } from "next/navigation";
-import { toast } from "sonner";
-import z from "zod";
+
+import { useTRPC } from "@/trpc/client";
+import { useAppForm } from "@/hooks/use-app-form";
+import { useCheckout } from "@/features/billing/hooks/use-checkout";
 
 const ttsFormSchema = z.object({
   text: z.string().min(1, "Please enter some text"),
@@ -32,7 +34,7 @@ export const ttsFormOptions = formOptions({
   defaultValues: defaultTTSValues,
 });
 
-export function TextToSpeechForm ({
+export function TextToSpeechForm({
   children,
   defaultValues,
 }: {
@@ -44,6 +46,8 @@ export function TextToSpeechForm ({
   const createMutation = useMutation(
     trpc.generations.create.mutationOptions({}),
   );
+
+  const { checkout } = useCheckout();
 
   const form = useAppForm({
     ...ttsFormOptions,
@@ -65,9 +69,19 @@ export function TextToSpeechForm ({
         toast.success("Audio generated successfully!");
         router.push(`/text-to-speech/${data.id}`);
       } catch (error) {
-        const message = error instanceof Error ? error.message : "Failed to generate audio";
+        const message =
+          error instanceof Error ? error.message : "Failed to generate audio";
 
-        toast.error(message);
+        if (message === "SUBSCRIPTION_REQUIRED") {
+          toast.error("Subscription required", {
+            action: {
+              label: "Subscribe",
+              onClick: () => checkout(),
+            },
+          });
+        } else {
+          toast.error(message);
+        }
       }
     },
   });
