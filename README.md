@@ -1,6 +1,16 @@
 # Resonance
 
+> AI-powered text-to-speech studio with multi-tenant organizations, voice cloning and usage-based billing.
+
+![Next.js](https://img.shields.io/badge/Next.js-16-black) ![React](https://img.shields.io/badge/React-19-61DAFB) ![TypeScript](https://img.shields.io/badge/TypeScript-5-blue) ![Prisma](https://img.shields.io/badge/Prisma-7-2D3748) ![tRPC](https://img.shields.io/badge/tRPC-11-2596BE)
+
 Resonance is a full-stack, multi-tenant SaaS platform for AI-powered text-to-speech generation, built with Next.js 16 (App Router), React 19 and TypeScript. Users can turn text into natural-sounding speech using curated system voices or their own custom cloned voices, with per-organization usage tracking and metered billing.
+
+## Preview
+
+![Resonance dashboard](dashboard-preview.png)
+
+The dashboard lets users jump straight into generating speech from text, with curated quick-start templates for common use cases such as narration, ads, movie scenes, game characters, podcasts and guided meditations.
 
 ## Features
 
