@@ -40,6 +40,48 @@ The dashboard lets users jump straight into generating speech from text, with cu
 | Observability | Sentry |
 | Other | wavesurfer.js, RecordRTC, Dicebear, nuqs, date-fns, sonner |
 
+## Architecture & flow
+
+```mermaid
+graph LR
+    U[User]
+
+    subgraph Resonance["Resonance (Next.js App)"]
+        UI["App Router UI"]
+        API["tRPC API Layer"]
+    end
+
+    subgraph Data["Data & Storage"]
+        DB[("PostgreSQL via Prisma")]
+        R2[("Cloudflare R2")]
+    end
+
+    subgraph External["External Services"]
+        Clerk["Clerk (Auth & Orgs)"]
+        Chatterbox["Chatterbox TTS API"]
+        Polar["Polar (Billing & Usage)"]
+        Sentry["Sentry (Monitoring)"]
+    end
+
+    U -->|Sign in| Clerk
+    U -->|Enter text / pick voice| UI
+    UI --> API
+    API --> DB
+    API -->|Request generation| Chatterbox
+    Chatterbox -->|Audio bytes| API
+    API -->|Store via presigned URL| R2
+    R2 -->|Stream playback| UI
+    API -->|Track usage & subscriptions| Polar
+    UI -.->|Errors & traces| Sentry
+    API -.->|Errors & traces| Sentry
+```
+
+1. The user signs in through Clerk and selects (or creates) an organization.
+2. Text and voice selection happen in the App Router UI, which talks to the backend exclusively through the type-safe tRPC layer.
+3. tRPC forwards the generation request to the external Chatterbox TTS API and persists metadata (voice, sampling parameters, organization) in PostgreSQL via Prisma.
+4. Generated audio is stored in Cloudflare R2 through presigned URLs and streamed back to the UI for playback.
+5. Usage is reported to Polar for metered billing, while Sentry captures errors and traces across client, server and edge runtimes.
+
 ## Project structure
 
 ```
