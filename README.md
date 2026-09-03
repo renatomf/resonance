@@ -103,27 +103,6 @@ resonance/
 - **Voice** — system or custom voice, with category, language and storage key.
 - **Generation** — generated audio: source text, selected voice, sampling parameters, organization scope and storage key.
 
-## Getting started
-
-### Prerequisites
-
-- Node.js 20+
-- PostgreSQL database
-- A running Chatterbox TTS API instance
-- Clerk, Cloudflare R2 and Polar accounts
-
-### Environment variables
-
-This project requires credentials for the database, Clerk, Chatterbox TTS, Cloudflare R2 and Polar integrations. Create a local `.env` file with your own values (never commit it or share real credentials) before running the app.
-
-### Installation
-
-```bash
-npm install
-npm run dev
-```
-
-Open [http://localhost:3000](http://localhost:3000).
 
 ## Available scripts
 
@@ -135,10 +114,3 @@ Open [http://localhost:3000](http://localhost:3000).
 | `npm run lint` | Run ESLint |
 | `npm run sync-api` | Regenerate TypeScript types from the Chatterbox OpenAPI spec |
 
-## Deployment
-
-The app is designed to deploy on [Vercel](https://vercel.com), with PostgreSQL, Cloudflare R2, Clerk, Polar and a Chatterbox TTS instance provisioned separately.
-
-## License
-
-Specify a license here (e.g. MIT) if you want the project to be reusable by others.
